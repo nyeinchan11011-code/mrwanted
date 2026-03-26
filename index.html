@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrwanted Computer Services | Tech & IT Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.emailjs.com/sdk/3.10.0/email.min.js"></script>
+    <style>
+        .video-background {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            filter: brightness(0.4);
+            transition: filter 2s ease, opacity 3s ease;
+        }
+        .video-background.dark {
+            filter: brightness(0.1) saturate(0.5);
+            opacity: 0.3;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background 2s ease, border 2s ease;
+        }
+        .dark .glassmorphism {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        body {
+            transition: background 8s ease, color 2s ease;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+            color: #1f2937;
+        }
+        .dark body {
+            background: linear-gradient(to bottom, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e2e8f0;
+        }
+        h1, h2, h3, p, span, a {
+            transition: color 2s ease;
+        }
+        h1, h2, h3 {
+            color: #1f2937;
+        }
+        p, span {
+            color: #374151;
+        }
+        a {
+            color: #2563eb;
+        }
+        .dark h1, .dark h2, .dark h3 {
+            color: #e2e8f0;
+        }
+        .dark p, .dark span {
+            color: #cbd5e1;
+        }
+        .dark a {
+            color: #93c5fd;
+        }
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+        }
+        .toggle-btn {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 2s ease;
+        }
+        .toggle-btn.dark {
+            background: linear-gradient(45deg, #2C3E50, #34495E);
+        }
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+            color: #FFD700;
+            font-size: 20px;
+            transition: all 2s ease;
+        }
+        .moon {
+            position: absolute;
+            top: 50%;
+            right: 5px;
+            transform: translateY(-50%);
+            color: #C0C0C0;
+            font-size: 20px;
+            transition: all 2s ease;
+            opacity: 0;
+        }
+        .toggle-btn.dark .sun {
+            transform: translateY(-50%) translateX(-30px);
+            opacity: 0;
+        }
+        .toggle-btn.dark .moon {
+            transform: translateY(-50%) translateX(-30px);
+            opacity: 1;
+        }
+        .sky-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(to bottom, rgba(255,165,0,0) 0%, rgba(255,165,0,0.3) 50%, rgba(255,69,0,0.5) 100%);
+            opacity: 0;
+            transition: opacity 8s ease;
+        }
+        .sky-overlay.active {
+            opacity: 1;
+        }
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 8s ease;
+        }
+        .stars.active {
+            opacity: 1;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        .sun-element {
+            position: fixed;
+            top: 10%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 1;
+            transition: opacity 8s ease;
+        }
+        .dark .sun-element {
+            opacity: 0;
+        }
+        .moon-element {
+            position: fixed;
+            top: 10%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #C0C0C0 0%, #808080 50%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 8s ease;
+        }
+        .dark .moon-element {
+            opacity: 1;
+        }
+        .clouds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 1;
+            transition: opacity 8s ease;
+        }
+        .dark .clouds {
+            opacity: 0;
+        }
+        .ticket-modal {
+            background: #ffffff;
+            border-color: #e5e7eb;
+            transition: background 2s ease, border-color 2s ease, color 2s ease;
+            color: #1f2937;
+        }
+        .dark .ticket-modal {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .ticket-modal input, .ticket-modal select, .ticket-modal textarea {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #1f2937;
+            transition: background 2s ease, border-color 2s ease, color 2s ease;
+        }
+        .dark .ticket-modal input, .dark .ticket-modal select, .dark .ticket-modal textarea {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        .ticket-modal label {
+            color: #6b7280;
+            transition: color 2s ease;
+        }
+        .dark .ticket-modal label {
+            color: #d1d5db;
+        }
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            animation: float 20s infinite linear;
+        }
+        .cloud:nth-child(1) {
+            width: 200px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .cloud:nth-child(2) {
+            width: 150px;
+            height: 40px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 5s;
+        }
+        .cloud:nth-child(3) {
+            width: 180px;
+            height: 50px;
+            top: 15%;
+            left: 80%;
+            animation-delay: 10s;
+        }
+        .cloud:nth-child(4) {
+            width: 120px;
+            height: 35px;
+            top: 40%;
+            left: 30%;
+            animation-delay: 15s;
+        }
+        @keyframes float {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100vw); }
+        }
+    </style>
+</head>
+<body class="text-white font-sans overflow-x-hidden" :class="theme === 'dark' ? 'dark' : ''" x-data="app()">
+
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline class="video-background" :class="theme === 'dark' ? 'dark' : ''">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-data-processing-in-a-server-room-4113-large.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Sky Overlay for Sunset -->
+    <div class="sky-overlay" :class="theme === 'dark' ? 'active' : ''"></div>
+
+    <!-- Stars -->
+    <div class="stars" :class="theme === 'dark' ? 'active' : ''">
+        <div class="star" style="width: 2px; height: 2px; top: 10%; left: 20%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 15%; left: 50%;"></div>
+        <div class="star" style="width: 3px; height: 3px; top: 20%; left: 80%;"></div>
+        <div class="star" style="width: 2px; height: 2px; top: 25%; left: 30%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 30%; left: 70%;"></div>
+        <div class="star" style="width: 2px; height: 2px; top: 35%; left: 10%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 40%; left: 60%;"></div>
+        <div class="star" style="width: 3px; height: 3px; top: 45%; left: 40%;"></div>
+        <div class="star" style="width: 2px; height: 2px; top: 50%; left: 90%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 55%; left: 25%;"></div>
+        <div class="star" style="width: 2px; height: 2px; top: 60%; left: 75%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 65%; left: 5%;"></div>
+        <div class="star" style="width: 3px; height: 3px; top: 70%; left: 55%;"></div>
+        <div class="star" style="width: 2px; height: 2px; top: 75%; left: 35%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 80%; left: 85%;"></div>
+        <div class="star" style="width: 2px; height: 2px; top: 85%; left: 15%;"></div>
+        <div class="star" style="width: 1px; height: 1px; top: 90%; left: 65%;"></div>
+        <div class="star" style="width: 3px; height: 3px; top: 95%; left: 45%;"></div>
+    </div>
+
+    <!-- Sun Element -->
+    <div class="sun-element"></div>
+
+    <!-- Moon Element -->
+    <div class="moon-element"></div>
+
+    <!-- Clouds -->
+    <div class="clouds">
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glassmorphism p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="my logo ori.jpg" alt="Mrwanted Logo" class="w-10 h-10 object-cover rounded-full shadow-lg">
+                <span class="text-xl font-bold tracking-wider">Mrwanted IT</span>
+            </div>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#services" class="hover:text-blue-400 transition">Services</a>
+                <a href="#videos" class="hover:text-blue-400 transition">Videos</a>
+                <a href="#album" class="hover:text-blue-400 transition">Works</a>
+                <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+                <button @click="toggleTheme" :class="theme === 'dark' ? 'toggle-btn dark' : 'toggle-btn'" class="ml-4">
+                    <i class="fas fa-sun sun"></i>
+                    <i class="fas fa-moon moon"></i>
+                </button>
+                <button @click="openTicketModal = true" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold transition">Open Ticket</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="h-screen flex flex-col justify-center items-center text-center px-4">
+        <div class="animate-bounce mb-6">
+            <img src="my logo ori.jpg" alt="Mrwanted Logo" class="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full shadow-2xl">
+        </div>
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-4">Mrwanted Computer Services</h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-2xl">
+            Professional IT Solutions, Hardware/Software Repairs, CCTV, Networking, and 3D Billboard Services.
+        </p>
+        <div class="mt-8 flex space-x-4">
+            <button @click="openTicketModal = true" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full text-lg font-bold transition transform hover:scale-105">Get Started</button>
+            <a href="#services" class="bg-white/10 hover:bg-white/20 px-8 py-3 rounded-full text-lg font-bold transition">View Services</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-slate-900/80">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-16">Our Specialized Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Laptop/Desktop Repairs -->
+                <div class="glassmorphism p-8 rounded-2xl hover:border-blue-500 transition-all group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition">
+                        <i class="fas fa-tools text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Laptop/Desktop Repairs</h3>
+                    <p class="text-gray-400">Expert hardware and software repairs for all models. From screen replacements to system optimization.</p>
+                </div>
+
+                <!-- Networking -->
+                <div class="glassmorphism p-8 rounded-2xl hover:border-blue-500 transition-all group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition">
+                        <i class="fas fa-network-wired text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Hotel & Office Networking</h3>
+                    <p class="text-gray-400">Professional networking solutions for hotels, companies, and homes. Stable and secure connectivity.</p>
+                </div>
+
+                <!-- CCTV -->
+                <div class="glassmorphism p-8 rounded-2xl hover:border-blue-500 transition-all group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition">
+                        <i class="fas fa-video text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">CCTV Installation</h3>
+                    <p class="text-gray-400">Advanced security camera setup for homes and businesses. Remote monitoring and 24/7 support.</p>
+                </div>
+
+                <!-- 3D Billboard -->
+                <div class="glassmorphism p-8 rounded-2xl hover:border-blue-500 transition-all group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition">
+                        <i class="fas fa-cube text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">3D Billboard Services</h3>
+                    <p class="text-gray-400">Cutting-edge 3D billboard designs and technical implementation for high-impact advertising.</p>
+                </div>
+
+                <!-- Tech Jobs -->
+                <div class="glassmorphism p-8 rounded-2xl hover:border-blue-500 transition-all group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition">
+                        <i class="fas fa-briefcase text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Tech Support Jobs</h3>
+                    <p class="text-gray-400">Professional IT staffing and technical support for specialized projects and companies.</p>
+                </div>
+
+                <!-- On-site Services -->
+                <div class="glassmorphism p-8 rounded-2xl hover:border-blue-500 transition-all group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition">
+                        <i class="fas fa-home text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">On-Site Services</h3>
+                    <p class="text-gray-400">"Home to Home" and "Go to Office" services. We bring our expertise directly to your location.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Gallery Section -->
+    <section id="videos" class="py-20 bg-slate-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-16 text-center">Our Work in Action</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 5D Video -->
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500">
+                        <source src="videos/5D.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-4xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <h4 class="font-bold text-lg text-white">5D Technology</h4>
+                        <p class="text-sm text-gray-300">Advanced 5D display solutions</p>
+                    </div>
+                </div>
+
+                <!-- AI Door Video -->
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500">
+                        <source src="videos/AI Door.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-4xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <h4 class="font-bold text-lg text-white">AI Tech</h4>
+                        <p class="text-sm text-gray-300">Smart access control technology</p>
+                    </div>
+                </div>
+
+                <!-- LOGO Video -->
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500">
+                        <source src="videos/LOGO.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-4xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <h4 class="font-bold text-lg text-white">Brand Animation</h4>
+                        <p class="text-sm text-gray-300">Professional logo animation</p>
+                    </div>
+                </div>
+
+                <!-- Cybercafes Video -->
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500">
+                        <source src="videos/cybercafes.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-4xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <h4 class="font-bold text-lg text-white">Cybercafe Setup</h4>
+                        <p class="text-sm text-gray-300">Complete gaming cafe installation</p>
+                    </div>
+                </div>
+
+                <!-- Gaming Computers Video -->
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500">
+                        <source src="videos/gaming computers.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-4xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <h4 class="font-bold text-lg text-white">Gaming Computers</h4>
+                        <p class="text-sm text-gray-300">High-performance gaming rigs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Album Section -->
+    <section id="album" class="py-20 bg-slate-800/90">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-16 text-center">Project History & Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Video Album Items -->
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/80 to-transparent">
+                        <h4 class="font-bold text-lg">Server Room Setup</h4>
+                        <p class="text-sm text-gray-300">Networking project for Luxury Hotel</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-5xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/80 to-transparent">
+                        <h4 class="font-bold text-lg">Hardware Repair</h4>
+                        <p class="text-sm text-gray-300">Complex motherboard micro-soldering</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-5xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative rounded-xl overflow-hidden group aspect-video bg-black">
+                    <img src="https://images.unsplash.com/photo-1609269649620-0e17a48f0a1e?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/80 to-transparent">
+                        <h4 class="font-bold text-lg">CCTV Implementation</h4>
+                        <p class="text-sm text-gray-300">Large scale office surveillance setup</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-play-circle text-5xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 text-center">
+                <p class="text-gray-400 max-w-2xl mx-auto italic">"Our commitment to excellence is reflected in every project we undertake. From small repairs to large-scale infrastructure deployments."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 glassmorphism mx-4 my-20 rounded-3xl">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-4xl font-bold mb-8">Get In Touch</h2>
+                    <p class="text-gray-300 mb-8">Need a professional IT solution? Our experts are ready to help you with your next project or repair.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <i class="fas fa-phone text-blue-500 w-6"></i>
+                            <span>+959403710059, +959940350948</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <i class="fas fa-envelope text-blue-500 w-6"></i>
+                            <span>mrwantedtheorigin@gmail.com</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <i class="fab fa-telegram text-blue-500 w-6"></i>
+                            <span>@skinnypete1011</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <i class="fab fa-weixin text-blue-500 w-6"></i>
+                            <span>mrwanted-IT-1st</span>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 mt-10">
+                        <a href="https://tiktok.com/@mrwanted18" class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <form class="space-y-4">
+                    <input type="text" placeholder="Your Name" class="w-full bg-slate-800/50 border border-slate-700 p-3 rounded-lg focus:outline-none focus:border-blue-500">
+                    <input type="email" placeholder="Your Email" class="w-full bg-slate-800/50 border border-slate-700 p-3 rounded-lg focus:outline-none focus:border-blue-500">
+                    <textarea placeholder="Message" rows="4" class="w-full bg-slate-800/50 border border-slate-700 p-3 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded-lg font-bold transition">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ticket Modal -->
+    <div x-show="openTicketModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-90"
+         x-transition:enter-end="opacity-100 scale-100"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80">
+        <div class="ticket-modal w-full max-w-lg p-8 rounded-2xl border shadow-2xl relative">
+            <button @click="openTicketModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-ticket-alt mr-3 text-blue-500"></i> Open Service Ticket
+            </h3>
+            <form @submit.prevent="submitTicket()" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Service Category</label>
+                    <select x-model="ticketData.category" class="w-full p-3 rounded-lg focus:border-blue-500 outline-none focus:ring-2 focus:ring-blue-400">
+                        <option value="repairs">Laptop/Desktop Repair</option>
+                        <option value="networking">Networking</option>
+                        <option value="cctv">CCTV</option>
+                        <option value="billboard">3D Billboard</option>
+                        <option value="other">Other Service</option>
+                    </select>
+                </div>
+                <input type="text" x-model="ticketData.name" placeholder="Full Name" required class="w-full p-3 rounded-lg focus:border-blue-500 outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="tel" x-model="ticketData.phone" placeholder="Phone Number" required class="w-full p-3 rounded-lg focus:border-blue-500 outline-none focus:ring-2 focus:ring-blue-400">
+                <textarea x-model="ticketData.description" placeholder="Describe your issue or request..." rows="4" required class="w-full p-3 rounded-lg focus:border-blue-500 outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded-lg font-bold transition text-white">Submit Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <div x-show="chatbotOpen" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-10"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="w-80 md:w-96 glassmorphism rounded-2xl overflow-hidden shadow-2xl border border-blue-500/30 mb-4">
+            <div class="bg-blue-600 p-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="font-bold">Mrwanted Bot</span>
+                </div>
+                <button @click="chatbotOpen = false"><i class="fas fa-minus"></i></button>
+            </div>
+            <div class="h-80 overflow-y-auto p-4 space-y-4 text-sm" id="chat-messages">
+                <template x-for="msg in messages">
+                    <div :class="msg.role === 'bot' ? 'text-left' : 'text-right'">
+                        <div :class="msg.role === 'bot' ? 'bg-slate-800' : 'bg-blue-600'" 
+                             class="inline-block p-3 rounded-2xl max-w-[80%]" 
+                             x-text="msg.text"></div>
+                    </div>
+                </template>
+            </div>
+            <div class="p-4 border-t border-slate-700 bg-slate-900/50">
+                <form @submit.prevent="sendMessage()" class="flex space-x-2">
+                    <input type="text" x-model="chatInput" placeholder="Type a message..." class="flex-1 bg-slate-800 border border-slate-700 p-2 rounded-lg text-xs focus:outline-none">
+                    <button type="submit" class="bg-blue-600 p-2 rounded-lg"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <button @click="chatbotOpen = !chatbotOpen" class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all transform hover:rotate-12">
+            <i class="fas fa-comment-dots text-2xl"></i>
+        </button>
+    </div>
+
+    <footer class="py-10 text-center border-t border-slate-800 text-gray-500 text-sm">
+        <p>&copy; 2026 Mrwanted Computer Services. All rights reserved.</p>
+        <p class="mt-2">Professional IT & Digital Solutions</p>
+    </footer>
+
+    <script>
+        function app() {
+            return {
+                theme: 'light',
+                openTicketModal: false,
+                chatbotOpen: false,
+                chatInput: '',
+                messages: [
+                    { role: 'bot', text: 'Hello! Welcome to Mrwanted Computer Services. How can I help you today?' }
+                ],
+                ticketData: {
+                    category: 'repairs',
+                    name: '',
+                    phone: '',
+                    description: ''
+                },
+                toggleTheme() {
+                    this.theme = this.theme === 'light' ? 'dark' : 'light';
+                },
+                sendMessage() {
+                    if (!this.chatInput.trim()) return;
+                    
+                    this.messages.push({ role: 'user', text: this.chatInput });
+                    const input = this.chatInput.toLowerCase();
+                    this.chatInput = '';
+                    
+                    setTimeout(() => {
+                        let response = "I'm not sure about that. Would you like to speak with a human? Call us at +959403710059.";
+                        
+                        if (input.includes('repair') || input.includes('laptop') || input.includes('desktop')) {
+                            response = "We offer professional repairs for both hardware and software. You can open a ticket or call us!";
+                        } else if (input.includes('cctv') || input.includes('camera')) {
+                            response = "We install advanced CCTV systems for homes, hotels, and offices. Would you like a quote?";
+                        } else if (input.includes('network') || input.includes('wifi')) {
+                            response = "Our networking services cover hotels and companies. We also do home installations!";
+                        } else if (input.includes('price') || input.includes('cost')) {
+                            response = "Prices vary by service. Please open a ticket or contact us directly for a free consultation.";
+                        } else if (input.includes('hello') || input.includes('hi')) {
+                            response = "Hi there! How can Mrwanted assist you today?";
+                        }
+                        
+                        this.messages.push({ role: 'bot', text: response });
+                        
+                        // Scroll to bottom
+                        setTimeout(() => {
+                            const chat = document.getElementById('chat-messages');
+                            chat.scrollTop = chat.scrollHeight;
+                        }, 50);
+                    }, 500);
+                },
+                submitTicket() {
+                    // Initialize EmailJS (free tier)
+                    emailjs.init('VPMQKYxq1dFPQscfH');
+                    
+                    const templateParams = {
+                        to_email: 'mrwantedtheorigin@gmail.com',
+                        from_name: this.ticketData.name,
+                        from_phone: this.ticketData.phone,
+                        category: this.ticketData.category,
+                        description: this.ticketData.description,
+                        reply_to: this.ticketData.phone
+                    };
+                    
+                    emailjs.send('service_default', 'template_default', templateParams)
+                        .then((response) => {
+                            alert(`✓ Ticket Submitted Successfully!\n\nName: ${this.ticketData.name}\nCategory: ${this.ticketData.category}\nEmail: mrwantedtheorigin@gmail.com\n\nWe will contact you shortly at ${this.ticketData.phone}.`);
+                            this.openTicketModal = false;
+                            this.ticketData = { category: 'repairs', name: '', phone: '', description: '' };
+                        }, (error) => {
+                            alert(`Ticket submitted locally. Due to email service limits, please also contact us directly at +959403710059 for confirmation.\n\nName: ${this.ticketData.name}\nPhone: ${this.ticketData.phone}`);
+                            this.openTicketModal = false;
+                            this.ticketData = { category: 'repairs', name: '', phone: '', description: '' };
+                        });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
