@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mrwanted Computer Inc. - Billing Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.9) 0%, rgba(26, 26, 62, 0.9) 50%, rgba(13, 27, 42, 0.9) 100%);
+            background-attachment: fixed;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* Animated stars background */
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* LOGIN PAGE */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(20, 30, 60, 0.95);
+            border: 2px solid rgba(100, 200, 255, 0.5);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(100, 200, 255, 0.3);
+        }
+
+        .login-box h1 {
+            color: #64c8ff;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(100, 200, 255, 0.5);
+        }
+
+        .login-box .company-name {
+            color: #a0d8ff;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #a0d8ff;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .form-group input {
+            padding: 15px;
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #e0e0e0;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(100, 200, 255, 0.8);
+            box-shadow: 0 0 15px rgba(100, 200, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(160, 216, 255, 0.5);
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .login-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #0099ff 0%, #0066cc 100%);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95em;
+        }
+
+        .login-buttons button:hover {
+            box-shadow: 0 5px 20px rgba(0, 153, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .login-buttons .admin-btn {
+            background: linear-gradient(135deg, #ff6b00 0%, #cc5500 100%);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* DASHBOARD */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+
+        .container.active {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(20, 30, 60, 0.7);
+            border-radius: 15px;
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .header-left {
+            flex: 1;
+            text-align: left;
+        }
+
+        .header-left h1 {
+            color: #64c8ff;
+            font-size: 2em;
+            text-shadow: 0 0 20px rgba(100, 200, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #a0d8ff;
+            margin: 3px 0;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #cc3333 0%, #990000 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            box-shadow: 0 5px 20px rgba(204, 51, 51, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .welcome-box {
+            background: rgba(20, 40, 80, 0.8);
+            border: 2px solid rgba(100, 200, 255, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-box h2 {
+            color: #64c8ff;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+            color: #a0d8ff;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #64c8ff;
+            font-weight: bold;
+        }
+
+        button.invoice-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #0099ff 0%, #0066cc 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        button.invoice-btn:hover {
+            box-shadow: 0 5px 20px rgba(0, 153, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        button.print-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b00 0%, #cc5500 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        button.print-btn:hover {
+            box-shadow: 0 5px 20px rgba(255, 107, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid rgba(100, 200, 255, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(100, 200, 255, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .modal-header h2 {
+            color: #64c8ff;
+            font-size: 1.8em;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #64c8ff;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            color: #ff6b00;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        /* Admin Panel Styles */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .admin-tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #a0d8ff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .admin-tab-btn.active {
+            color: #64c8ff;
+            border-bottom-color: #ff6b00;
+        }
+
+        .admin-tab-btn:hover {
+            color: #64c8ff;
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-field label {
+            color: #a0d8ff;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .form-field input {
+            padding: 10px;
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #e0e0e0;
+            font-size: 0.95em;
+        }
+
+        .form-field input:focus {
+            outline: none;
+            border-color: rgba(100, 200, 255, 0.8);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0099ff 0%, #0066cc 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(0, 153, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #cc3333 0%, #990000 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 5px 15px rgba(204, 51, 51, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(100, 200, 255, 0.2);
+            color: #64c8ff;
+            border: 1px solid rgba(100, 200, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100, 200, 255, 0.3);
+        }
+
+        /* Admin Dashboard Grid */
+        .admin-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-customer-card {
+            background: linear-gradient(135deg, rgba(0, 100, 180, 0.3) 0%, rgba(10, 50, 120, 0.3) 100%);
+            border: 2px solid rgba(100, 200, 255, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-customer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0099ff 0%, #ff6b00 100%);
+        }
+
+        .admin-customer-card:hover {
+            box-shadow: 0 8px 25px rgba(100, 200, 255, 0.3);
+            transform: translateY(-5px);
+            border-color: rgba(100, 200, 255, 0.8);
+        }
+
+        .admin-customer-card h3 {
+            color: #64c8ff;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(100, 200, 255, 0.3);
+        }
+
+        .admin-customer-card p {
+            margin: 8px 0;
+            font-size: 0.9em;
+            color: #a0d8ff;
+        }
+
+        .admin-customer-card strong {
+            color: #64c8ff;
+            font-weight: 600;
+        }
+
+        .admin-customer-card .value {
+            color: #ff6b00;
+            font-weight: bold;
+        }
+
+        .admin-card-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(100, 200, 255, 0.2);
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-card-footer button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .customers-list {
+            display: grid;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .customer-card {
+            background: rgba(30, 50, 100, 0.5);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .customer-card-info {
+            flex: 1;
+        }
+
+        .customer-card-info p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .customer-card-info strong {
+            color: #64c8ff;
+        }
+
+        .customer-card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .customer-card-actions button {
+            flex: 1;
+            min-width: 80px;
+            padding: 6px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background: rgba(100, 150, 255, 0.3);
+            color: #a0d8ff;
+            border: 1px solid rgba(100, 150, 255, 0.5);
+        }
+
+        .btn-edit:hover {
+            background: rgba(100, 150, 255, 0.5);
+        }
+
+        .btn-delete {
+            background: rgba(204, 51, 51, 0.3);
+            color: #ff6b6b;
+            border: 1px solid rgba(204, 51, 51, 0.5);
+        }
+
+        .btn-delete:hover {
+            background: rgba(204, 51, 51, 0.5);
+        }
+
+        /* Invoice */
+        .invoice {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 10px;
+            position: relative;
+            min-height: 600px;
+        }
+
+        .invoice-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.05;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 10px;
+        }
+
+        .invoice-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #0066cc;
+        }
+
+        .logo-section img {
+            max-width: 120px;
+            max-height: 120px;
+        }
+
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h1 {
+            color: #0066cc;
+            text-shadow: none;
+            margin-bottom: 10px;
+        }
+
+        .invoice-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-section h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .detail-section p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .detail-section strong {
+            color: #333;
+        }
+
+        .billing-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .billing-table thead {
+            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
+            color: white;
+        }
+
+        .billing-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border: none;
+        }
+
+        .billing-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .billing-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .amount {
+            text-align: right;
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .invoice-summary {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .summary-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-row.total {
+            border-bottom: 3px solid #0066cc;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0066cc;
+            padding: 15px 0;
+        }
+
+        .invoice-footer {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 2px solid #ddd;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Theme Toggle Switch */
+        .theme-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(20, 30, 60, 0.8);
+            padding: 10px 15px;
+            border-radius: 50px;
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle-label {
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: rgba(100, 200, 255, 0.2);
+            border: 2px solid rgba(100, 200, 255, 0.5);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-switch.light::after {
+            left: 26px;
+        }
+
+        .theme-toggle-switch:hover {
+            box-shadow: 0 0 15px rgba(100, 200, 255, 0.4);
+        }
+
+        /* DARK MODE (BLACK HOLE) - Default */
+        body.dark-mode {
+            background: linear-gradient(135deg, rgba(5, 5, 15, 0.95) 0%, rgba(10, 10, 30, 0.95) 50%, rgba(5, 10, 20, 0.95) 100%);
+            background-attachment: fixed;
+            color: #e0e0e0;
+        }
+
+        /* Clouds for Light Mode */
+        .clouds {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+            display: none;
+        }
+
+        body.light-mode .clouds {
+            display: block;
+        }
+
+        body.dark-mode .clouds {
+            display: none;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.7;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+        }
+
+        .cloud::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud::after {
+            width: 40px;
+            height: 40px;
+            top: -15px;
+            right: 10px;
+        }
+
+        @keyframes float-cloud {
+            0% { transform: translateX(0px); }
+            100% { transform: translateX(100vw); }
+        }
+
+        .cloud {
+            animation: float-cloud 80s linear infinite;
+        }
+
+        .cloud:nth-child(2) {
+            animation-delay: -20s;
+            opacity: 0.5;
+        }
+
+        .cloud:nth-child(3) {
+            animation-delay: -40s;
+            opacity: 0.6;
+        }
+
+        /* Sun for Light Mode */
+        .sun {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 30% 30%, #ffeb3b, #ffc107);
+            border-radius: 50%;
+            top: 50px;
+            right: 50px;
+            z-index: 0;
+            box-shadow: 0 0 60px rgba(255, 193, 7, 0.5);
+            display: none;
+        }
+
+        body.light-mode .sun {
+            display: block;
+        }
+
+        body.dark-mode .sun {
+            display: none;
+        }
+
+        body.dark-mode .login-box,
+        body.dark-mode .welcome-box,
+        body.dark-mode .modal-content,
+        body.dark-mode header {
+            background: rgba(15, 20, 45, 0.95);
+            border-color: rgba(100, 200, 255, 0.5);
+        }
+
+        body.dark-mode .login-box h1,
+        body.dark-mode .login-box .company-name,
+        body.dark-mode h2,
+        body.dark-mode .header-left h1,
+        body.dark-mode .header-left p {
+            color: #64c8ff;
+            text-shadow: 0 0 20px rgba(100, 200, 255, 0.3);
+        }
+
+        /* LIGHT MODE (LIGHT HOLE) */
+        body.light-mode {
+            background: linear-gradient(180deg, rgba(135, 206, 235, 0.95) 0%, rgba(180, 220, 255, 0.95) 50%, rgba(240, 248, 255, 0.95) 100%);
+            background-attachment: fixed;
+            color: #2c3e50;
+        }
+
+        body.light-mode .login-box {
+            background: rgba(255, 255, 255, 0.98);
+            border: 2px solid rgba(100, 180, 255, 0.5);
+            box-shadow: 0 0 50px rgba(100, 180, 255, 0.25);
+        }
+
+        body.light-mode .login-box h1 {
+            color: #ff8c42;
+            text-shadow: 0 0 20px rgba(255, 140, 66, 0.2);
+        }
+
+        body.light-mode .login-box .company-name {
+            color: #2c5aa0;
+            font-weight: 700;
+        }
+
+        body.light-mode .form-group label {
+            color: #2c5aa0;
+            font-weight: 700;
+        }
+
+        body.light-mode .form-group input {
+            background: rgba(100, 180, 255, 0.08);
+            border: 1.5px solid rgba(100, 180, 255, 0.4);
+            color: #2c3e50;
+        }
+
+        body.light-mode .form-group input:focus {
+            border-color: rgba(100, 180, 255, 0.9);
+            background: rgba(100, 180, 255, 0.15);
+            box-shadow: 0 0 15px rgba(100, 180, 255, 0.3);
+        }
+
+        body.light-mode .login-form input::placeholder {
+            color: rgba(100, 140, 180, 0.7);
+        }
+
+        body.light-mode .error-message {
+            background: rgba(220, 100, 100, 0.15);
+            color: #c94646;
+            border-color: rgba(220, 100, 100, 0.4);
+        }
+
+        body.light-mode .container {
+            background: transparent;
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(100, 180, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(100, 180, 255, 0.1);
+        }
+
+        body.light-mode .header-left h1 {
+            color: #ff8c42;
+        }
+
+        body.light-mode .header-left p {
+            color: #2c5aa0;
+        }
+
+        body.light-mode .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        body.light-mode .welcome-box {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(100, 180, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(100, 180, 255, 0.1);
+        }
+
+        body.light-mode .welcome-box h2 {
+            color: #ff8c42;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.15);
+        }
+
+        body.light-mode .info-row {
+            border-bottom: 1px solid rgba(100, 180, 255, 0.2);
+            color: #2c3e50;
+        }
+
+        body.light-mode .info-label {
+            color: #2c5aa0;
+            font-weight: 600;
+        }
+
+        body.light-mode .info-value {
+            color: #ff8c42;
+            font-weight: 700;
+        }
+
+        body.light-mode .invoice-btn,
+        body.light-mode .print-btn {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .modal-content {
+            background: linear-gradient(135deg, #fafbff 0%, #e8f4ff 100%);
+            border: 2px solid rgba(100, 180, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(100, 180, 255, 0.2);
+        }
+
+        body.light-mode .modal-header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+            border-bottom: 2px solid rgba(100, 180, 255, 0.3);
+        }
+
+        body.light-mode .modal-header h2 {
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .close-btn {
+            color: white;
+        }
+
+        body.light-mode .form-field label {
+            color: #2c5aa0;
+            font-weight: 700;
+        }
+
+        body.light-mode .form-field input {
+            background: rgba(100, 180, 255, 0.08);
+            border: 1.5px solid rgba(100, 180, 255, 0.4);
+            color: #2c3e50;
+        }
+
+        body.light-mode .invoice {
+            background: white;
+            color: #2c3e50;
+        }
+
+        body.light-mode .admin-customer-card {
+            background: linear-gradient(135deg, rgba(230, 245, 255, 0.8) 0%, rgba(220, 240, 255, 0.8) 100%);
+            border: 2px solid rgba(100, 180, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(100, 180, 255, 0.15);
+        }
+
+        body.light-mode .admin-customer-card h3 {
+            color: #ff8c42;
+        }
+
+        body.light-mode .admin-customer-card p {
+            color: #2c3e50;
+        }
+
+        body.light-mode .admin-customer-card strong {
+            color: #2c5aa0;
+        }
+
+        body.light-mode .admin-customer-card .value {
+            color: #ff8c42;
+        }
+
+        body.light-mode .admin-tab-btn {
+            color: #2c5aa0;
+        }
+
+        body.light-mode .admin-tab-btn.active {
+            color: #ff8c42;
+            border-bottom-color: #ff8c42;
+        }
+
+        /* Password Show/Hide Toggle */
+        .password-toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #a0d8ff;
+            font-size: 1.1em;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .password-toggle-btn:hover {
+            color: #64c8ff;
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        .password-field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-field-wrapper input {
+            padding-right: 40px;
+            width: 100%;
+        }
+
+        /* Active/Inactive Toggle Button */
+        .status-toggle-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+            position: relative;
+            z-index: 10;
+        }
+
+        .status-toggle-btn.active {
+            background: rgba(74, 255, 74, 0.3);
+            color: #4aff4a;
+            border: 1px solid rgba(74, 255, 74, 0.6);
+        }
+
+        .status-toggle-btn.inactive {
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.6);
+        }
+
+        .status-toggle-btn:hover {
+            box-shadow: 0 0 10px rgba(100, 200, 255, 0.3);
+        }
+
+        /* Edit Button */
+        .btn-edit-full {
+            background: rgba(100, 150, 255, 0.3);
+            color: #a0d8ff;
+            border: 1px solid rgba(100, 150, 255, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-edit-full:hover {
+            background: rgba(100, 150, 255, 0.5);
+            box-shadow: 0 0 10px rgba(100, 150, 255, 0.3);
+        }
+
+        /* Invoice and Share Buttons */
+        .btn-invoice {
+            background: rgba(0, 153, 255, 0.3);
+            color: #64c8ff;
+            border: 1px solid rgba(0, 153, 255, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-invoice:hover {
+            background: rgba(0, 153, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 153, 255, 0.3);
+        }
+
+        .btn-share {
+            background: rgba(255, 193, 7, 0.3);
+            color: #ffd700;
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-share:hover {
+            background: rgba(255, 193, 7, 0.5);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+        }
+
+        /* Share Modal */
+        .share-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .share-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-modal-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 100%);
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid rgba(100, 200, 255, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(100, 200, 255, 0.3);
+            animation: slideUp 0.3s ease;
+            text-align: center;
+        }
+
+        .share-modal-header {
+            background: linear-gradient(135deg, #0066cc 0%, #003d99 100%);
+            padding: 20px;
+            border-bottom: 2px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .share-modal-header h2 {
+            color: #64c8ff;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .share-modal-body {
+            padding: 30px;
+        }
+
+        .share-link-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .share-link {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            color: #64c8ff;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .qr-code-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            display: block;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .share-buttons button {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-copy {
+            background: rgba(0, 153, 255, 0.3);
+            color: #64c8ff;
+            border: 1px solid rgba(0, 153, 255, 0.5);
+        }
+
+        .btn-copy:hover {
+            background: rgba(0, 153, 255, 0.5);
+        }
+
+        .btn-close-share {
+            background: rgba(204, 51, 51, 0.3);
+            color: #ff6b6b;
+            border: 1px solid rgba(204, 51, 51, 0.5);
+        }
+
+        .btn-close-share:hover {
+            background: rgba(204, 51, 51, 0.5);
+        }
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(100, 180, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(100, 180, 255, 0.15);
+        }
+
+        body.light-mode .theme-toggle-switch {
+            background: rgba(0, 102, 204, 0.1);
+            border: 2px solid rgba(0, 102, 204, 0.4);
+        }
+
+        @media print {
+            * {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                background: white !important;
+            }
+            .stars, .container, .modal, .close-btn, .modal-header {
+                display: none !important;
+            }
+            .modal.active {
+                display: block !important;
+                position: static !important;
+                background: none !important;
+            }
+            .modal-content {
+                border: none !important;
+                box-shadow: none !important;
+                max-width: none !important;
+                width: 100% !important;
+                max-height: none !important;
+            }
+            .modal-body {
+                padding: 0 !important;
+            }
+            .invoice {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars background -->
+    <div class="stars" id="starsContainer"></div>
+
+    <!-- Clouds background -->
+    <div class="clouds" id="cloudsContainer"></div>
+
+    <!-- Sun -->
+    <div class="sun"></div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <span class="theme-toggle-label" id="themeIcon">🌙</span>
+        <div class="theme-toggle-switch" id="themeToggle" onclick="toggleTheme()"></div>
+        <span class="theme-toggle-label" id="themeName">Dark Mode</span>
+    </div>
+
+    <!-- Bill Reminder Notification -->
+    <div id="billReminder" class="bill-reminder-notification" style="display: none;">
+        <span id="reminderText"></span>
+        <button onclick="closeBillReminder()" style="margin-left: 10px; background: none; border: none; color: white; cursor: pointer; font-size: 1.2em;">✕</button>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h1>🤖</h1>
+            <p class="company-name">Mrwanted Computer Inc.</p>
+            <p style="color: #64c8ff; margin-bottom: 30px;">Your Trusted IT Solutions & Billing Partner</p>
+            
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" onkeyup="handleEnter(event)">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" onkeyup="handleEnter(event)">
+                </div>
+
+                <div class="login-buttons">
+                    <button onclick="customerLogin()">📱 Login</button>
+                    <button class="admin-btn" onclick="showAdminPanel()">🔐 Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>🤖 Mrwanted Computer Inc.</h1>
+                    <p>Your Trusted IT Solutions & Billing Partner</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">📞 +959940350948 | +959403710059 | 📧 mrwantedtheorigin@gmail.com</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            </div>
+        </header>
+
+        <div class="welcome-box" id="customerInfo"></div>
+
+        <button class="invoice-btn" onclick="viewInvoice()">📄 View Invoice</button>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="invoiceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Invoice</h2>
+                <button class="close-btn" onclick="closeInvoice()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="invoice" id="invoiceContent"></div>
+                <button class="print-btn" onclick="printInvoice()">🖨️ Print Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="adminDashboardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔐 Admin Dashboard - Customer Overview</h2>
+                <button class="close-btn" onclick="closeAdminDashboard()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-dashboard-grid" id="adminDashboardGrid"></div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn-primary" onclick="openAdminPanel()" style="padding: 15px 40px; font-size: 1em;">⚙️ Manage Users & Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔐 Admin Panel</h2>
+                <button class="close-btn" onclick="closeAdmin()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-tabs">
+                    <button class="admin-tab-btn active" onclick="switchAdminTab('customers')">👥 All Customers</button>
+                    <button class="admin-tab-btn" onclick="switchAdminTab('create')">➕ Create User</button>
+                    <button class="admin-tab-btn" onclick="switchAdminTab('kits')">🛰️ Kit Numbers</button>
+                </div>
+
+                <!-- All Customers Tab -->
+                <div id="customersTab" class="admin-tab-content active">
+                    <h3 style="color: #64c8ff; margin-bottom: 15px;">Registered Users</h3>
+                    <div class="customers-list" id="customersList"></div>
+                </div>
+
+                <!-- Create User Tab -->
+                <div id="createTab" class="admin-tab-content">
+                    <h3 style="color: #64c8ff; margin-bottom: 20px;">Create New User</h3>
+                    <div class="form-grid full">
+                        <div class="form-field">
+                            <label>Company/Customer Name *</label>
+                            <input type="text" id="newName" placeholder="e.g., Constellation Corp">
+                        </div>
+                        <div class="form-field">
+                            <label>Username *</label>
+                            <input type="text" id="newUsername" placeholder="e.g., constellation">
+                        </div>
+                        <div class="form-field">
+                            <label>Password *</label>
+                            <div class="password-field-wrapper">
+                                <input type="password" id="newPassword" placeholder="Enter password">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('newPassword')">👁️</button>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label>Kit Number *</label>
+                            <input type="text" id="newKitNumber" placeholder="e.g., KT-001-2024">
+                        </div>
+                        <div class="form-field">
+                            <label>Serial Number (SN) *</label>
+                            <input type="text" id="newSN" placeholder="e.g., SL-001-2024">
+                        </div>
+                        <div class="form-field">
+                            <label>Monthly Price (₭) *</label>
+                            <input type="number" id="newPrice" placeholder="e.g., 99999">
+                        </div>
+                        <div class="form-field">
+                            <label>Bill Date (1-31) *</label>
+                            <input type="number" id="newBillDate" placeholder="15" min="1" max="31">
+                        </div>
+                        <div class="form-field">
+                            <label>Prepaid Months *</label>
+                            <input type="number" id="newPrepaid" placeholder="3" min="0">
+                        </div>
+                    </div>
+                    <div class="admin-buttons">
+                        <button class="btn-primary" onclick="createNewUser()">✓ Create User</button>
+                        <button class="btn-secondary" onclick="clearCreateForm()">⟲ Clear</button>
+                    </div>
+                </div>
+
+                <!-- Kit Numbers Tab -->
+                <div id="kitsTab" class="admin-tab-content">
+                    <h3 style="color: #64c8ff; margin-bottom: 20px;">🛰️ Starlink Kit Numbers</h3>
+                    <div class="customers-list" id="kitsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Edit User Configuration</h2>
+                <button class="close-btn" onclick="closeEditUser()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid full">
+                    <div class="form-field">
+                        <label>Company/Customer Name</label>
+                        <input type="text" id="editName" placeholder="e.g., Constellation Corp">
+                    </div>
+                    <div class="form-field">
+                        <label>Username</label>
+                        <input type="text" id="editUsername" placeholder="e.g., constellation" disabled>
+                    </div>
+                    <div class="form-field">
+                        <label>Password</label>
+                        <div class="password-field-wrapper">
+                            <input type="password" id="editPassword" placeholder="Enter password">
+                            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('editPassword')">👁️</button>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label>Kit Number</label>
+                        <input type="text" id="editKitNumber" placeholder="e.g., KT-001-2024">
+                    </div>
+                    <div class="form-field">
+                        <label>Serial Number (SN)</label>
+                        <input type="text" id="editSN" placeholder="e.g., SL-001-2024">
+                    </div>
+                    <div class="form-field">
+                        <label>Monthly Price (₭)</label>
+                        <input type="number" id="editPrice" placeholder="e.g., 99999">
+                    </div>
+                    <div class="form-field">
+                        <label>Bill Date (1-31)</label>
+                        <input type="number" id="editBillDate" placeholder="15" min="1" max="31">
+                    </div>
+                    <div class="form-field">
+                        <label>Prepaid Months</label>
+                        <input type="number" id="editPrepaid" placeholder="3" min="0">
+                    </div>
+                </div>
+                <div class="admin-buttons">
+                    <button class="btn-primary" onclick="saveEditedUser()">✓ Save Changes</button>
+                    <button class="btn-secondary" onclick="closeEditUser()">✕ Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="share-modal">
+        <div class="share-modal-content">
+            <div class="share-modal-header">
+                <h2>🔗 Share Customer Invoice</h2>
+                <p id="shareCustomerName"></p>
+            </div>
+            <div class="share-modal-body">
+                <div class="share-link-container">
+                    <p style="color: #a0d8ff; margin-bottom: 10px;">Direct Link (No Password Required):</p>
+                    <div class="share-link" id="shareLink"></div>
+                    <div class="qr-code-container">
+                        <p style="color: #a0d8ff; margin-bottom: 10px;">QR Code:</p>
+                        <canvas class="qr-code" id="qrCode"></canvas>
+                    </div>
+                </div>
+                <div class="share-buttons">
+                    <button class="btn-copy" onclick="copyShareLink()">📋 Copy Link</button>
+                    <button class="btn-close-share" onclick="closeShareModal()">✕ Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script>
+        let customers = [];
+        let currentCustomer = null;
+        const ADMIN_PASSWORD = "admin123";
+
+        // Theme Management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('appTheme') || 'dark-mode';
+            document.body.className = savedTheme;
+            updateThemeToggle(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.className;
+            const newTheme = currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode';
+            document.body.className = newTheme;
+            localStorage.setItem('appTheme', newTheme);
+            updateThemeToggle(newTheme);
+            generateClouds();
+        }
+
+        function updateThemeToggle(theme) {
+            const toggle = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            const name = document.getElementById('themeName');
+
+            if (theme === 'light-mode') {
+                toggle.classList.add('light');
+                icon.textContent = '☀️';
+                name.textContent = 'Light Mode';
+            } else {
+                toggle.classList.remove('light');
+                icon.textContent = '🌙';
+                name.textContent = 'Dark Mode';
+            }
+        }
+
+        // Initialize customers with username and password
+        function initializeCustomers() {
+            const saved = localStorage.getItem('starlink_customers');
+            if (saved) {
+                customers = JSON.parse(saved);
+            } else {
+                customers = [
+                    {
+                        id: 1,
+                        name: 'Constellation Corp',
+                        username: 'constellation',
+                        password: 'pass123',
+                        kitNumber: 'KT-001-2024',
+                        sn: 'SL-001-2024',
+                        monthlyPrice: 99999,
+                        billDate: 15,
+                        billingPeriod: 'Monthly',
+                        prepaidMonths: 3,
+                        status: 'Active'
+                    },
+                    {
+                        id: 2,
+                        name: 'Orbit Tech Solutions',
+                        username: 'orbit',
+                        password: 'pass456',
+                        kitNumber: 'KT-002-2024',
+                        sn: 'SL-002-2024',
+                        monthlyPrice: 199999,
+                        billDate: 28,
+                        billingPeriod: 'Monthly',
+                        prepaidMonths: 6,
+                        status: 'Active'
+                    },
+                    {
+                        id: 3,
+                        name: 'Satellite Communications',
+                        username: 'satellite',
+                        password: 'pass789',
+                        kitNumber: 'KT-003-2024',
+                        sn: 'SL-003-2024',
+                        monthlyPrice: 449999,
+                        billDate: 31,
+                        billingPeriod: 'Monthly',
+                        prepaidMonths: 12,
+                        status: 'Active'
+                    }
+                ];
+                saveCustomers();
+            }
+        }
+
+        // Save customers to localStorage
+        function saveCustomers() {
+            localStorage.setItem('starlink_customers', JSON.stringify(customers));
+        }
+
+        // Generate stars
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Generate clouds for light mode
+        function generateClouds() {
+            const container = document.getElementById('cloudsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                cloud.style.width = Math.random() * 100 + 80 + 'px';
+                cloud.style.height = cloud.style.width * 0.4 + 'px';
+                cloud.style.top = Math.random() * 40 + '%';
+                cloud.style.animationDelay = (i * -25) + 's';
+                container.appendChild(cloud);
+            }
+        }
+
+        // Customer Login
+        function customerLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+
+            if (!username || !password) {
+                errorDiv.textContent = '❌ Please enter both username and password';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const customer = customers.find(c => c.username === username && c.password === password);
+
+            if (customer) {
+                currentCustomer = customer;
+                showDashboard();
+                errorDiv.style.display = 'none';
+            } else {
+                errorDiv.textContent = '❌ Invalid username or password';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Show Dashboard
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            displayCustomerInfo();
+        }
+
+        // Display Customer Info
+        function displayCustomerInfo() {
+            const nextBilling = getNextBillingDate(currentCustomer.billDate, currentCustomer.prepaidMonths);
+            const customerInfoDiv = document.getElementById('customerInfo');
+            
+            customerInfoDiv.innerHTML = `
+                <h2>Welcome, ${currentCustomer.name}! 👋</h2>
+                <div class="info-row">
+                    <span class="info-label">Serial Number (SN):</span>
+                    <span class="info-value">${currentCustomer.sn}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Monthly Billing Amount:</span>
+                    <span class="info-value">₭${currentCustomer.monthlyPrice.toLocaleString()}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Next Bill Due:</span>
+                    <span class="info-value">📅 ${nextBilling}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Prepaid Months:</span>
+                    <span class="info-value">📦 ${currentCustomer.prepaidMonths} months</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Account Status:</span>
+                    <span class="info-value">✓ ${currentCustomer.status}</span>
+                </div>
+            `;
+        }
+
+        // Get Next Billing Date
+        function getNextBillingDate(preferredDate, prepaidMonths = 0) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            
+            if (prepaidMonths > 0) {
+                let targetMonth = month + prepaidMonths;
+                let targetYear = year;
+                
+                while (targetMonth >= 12) {
+                    targetMonth -= 12;
+                    targetYear += 1;
+                }
+                
+                const lastDay = new Date(targetYear, targetMonth + 1, 0).getDate();
+                const billingDay = Math.min(preferredDate, lastDay);
+                
+                return new Date(targetYear, targetMonth, billingDay).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            } else {
+                const lastDayCurrentMonth = new Date(year, month + 1, 0).getDate();
+                const billingDayCurrentMonth = Math.min(preferredDate, lastDayCurrentMonth);
+                const currentMonthBilling = new Date(year, month, billingDayCurrentMonth);
+                
+                if (currentMonthBilling >= today) {
+                    return currentMonthBilling.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                }
+                
+                let nextMonth = month + 1;
+                let nextYear = year;
+                if (nextMonth >= 12) {
+                    nextMonth = 0;
+                    nextYear += 1;
+                }
+                
+                const lastDayNextMonth = new Date(nextYear, nextMonth + 1, 0).getDate();
+                const billingDayNextMonth = Math.min(preferredDate, lastDayNextMonth);
+                return new Date(nextYear, nextMonth, billingDayNextMonth).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            }
+        }
+
+        // View Invoice
+        function viewInvoice() {
+            const today = new Date();
+            const invoiceDate = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const nextBillingDate = getNextBillingDate(currentCustomer.billDate, currentCustomer.prepaidMonths);
+            const prepaidAmount = currentCustomer.monthlyPrice * currentCustomer.prepaidMonths;
+
+            const invoiceHTML = `
+                <div class="invoice-background" style="background-image: url('my logo ori.jpg');"></div>
+                <div class="invoice-content">
+                    <div class="invoice-header">
+                        <div class="logo-section">
+                            <img src="my logo ori.jpg" alt="Company Logo">
+                        </div>
+                        <div class="invoice-title">
+                            <h1>INVOICE</h1>
+                            <p>#${String(currentCustomer.id).padStart(5, '0')}</p>
+                        </div>
+                    </div>
+
+                    <div class="invoice-details">
+                        <div class="detail-section">
+                            <h3>Bill From:</h3>
+                            <p><strong>Mrwanted Computer Inc.</strong></p>
+                            <p>Professional Services</p>
+                            <p>📞 +959940350948 | +959403710059</p>
+                            <p>📧 mrwantedtheorigin@gmail.com</p>
+                            <p>💬 Telegram: @skinnypete1011</p>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Bill To:</h3>
+                            <p><strong>${currentCustomer.name}</strong></p>
+                            <p><strong>SN:</strong> ${currentCustomer.sn}</p>
+                            <p><strong>Invoice Date:</strong> ${invoiceDate}</p>
+                            <p><strong>Next Bill Due:</strong> ${nextBillingDate}</p>
+                        </div>
+                    </div>
+
+                    <table class="billing-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Period</th>
+                                <th>Quantity</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Service Fee</strong></td>
+                                <td>${currentCustomer.billingPeriod}</td>
+                                <td>1</td>
+                                <td class="amount">₭${currentCustomer.monthlyPrice.toLocaleString()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="invoice-summary">
+                        <div class="summary-box">
+                            <div class="summary-row">
+                                <span>Monthly Charge:</span>
+                                <span>₭${currentCustomer.monthlyPrice.toLocaleString()}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Prepaid Months:</span>
+                                <span>${currentCustomer.prepaidMonths}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Prepaid Amount:</span>
+                                <span>₭${prepaidAmount.toLocaleString()}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (0%):</span>
+                                <span>₭0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>TOTAL DUE:</span>
+                                <span>₭${currentCustomer.monthlyPrice.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="invoice-footer">
+                        <p>Thank you for your business! This invoice is confidential and intended only for the recipient.</p>
+                        <p>© 2024 Mrwanted Computer Inc. All rights reserved.</p>
+                        <p>Contact: +959940350948 | +959403710059 | mrwantedtheorigin@gmail.com</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('invoiceContent').innerHTML = invoiceHTML;
+            document.getElementById('invoiceModal').classList.add('active');
+        }
+
+        // Close Invoice
+        function closeInvoice() {
+            document.getElementById('invoiceModal').classList.remove('active');
+        }
+
+        // Print Invoice
+        function printInvoice() {
+            window.print();
+        }
+
+        // Logout
+        function logout() {
+            currentCustomer = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        // Handle Enter Key
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                if (document.getElementById('loginPage').style.display !== 'none') {
+                    customerLogin();
+                }
+            }
+        }
+
+        // Show Admin Panel (placeholder)
+        function showAdminPanel() {
+            const pass = prompt('Enter Admin Password:');
+            if (pass === ADMIN_PASSWORD) {
+                displayAdminDashboard();
+                document.getElementById('adminDashboardModal').classList.add('active');
+            } else {
+                alert('❌ Incorrect password');
+            }
+        }
+
+        // Display Admin Dashboard with Customer Cards
+        function displayAdminDashboard() {
+            const dashboard = document.getElementById('adminDashboardGrid');
+            dashboard.innerHTML = '';
+
+            if (customers.length === 0) {
+                dashboard.innerHTML = '<p style="color: #a0d8ff; grid-column: 1/-1; text-align: center;">No customers found</p>';
+                return;
+            }
+
+            customers.forEach((customer) => {
+                const nextBilling = getNextBillingDate(customer.billDate, customer.prepaidMonths);
+                const card = document.createElement('div');
+                card.className = 'admin-customer-card';
+                const statusClass = customer.status === 'Active' ? 'active' : 'inactive';
+                card.innerHTML = `
+                    <h3>👤 ${customer.name}</h3>
+                    <p><strong>Username:</strong> <span class="value">${customer.username}</span></p>
+                    <p><strong>Kit #:</strong> <span class="value">${customer.kitNumber || 'N/A'}</span></p>
+                    <p><strong>Serial Number:</strong> ${customer.sn}</p>
+                    <p><strong>Monthly Billing:</strong> <span class="value">₭${customer.monthlyPrice.toLocaleString()}</span></p>
+                    <p><strong>Prepaid Months:</strong> <span class="value">${customer.prepaidMonths}</span></p>
+                    <p><strong>Next Bill:</strong> ${nextBilling}</p>
+                    <p><strong>Status:</strong> <span style="color: ${customer.status === 'Active' ? '#4aff4a' : '#ff6b6b'};">● ${customer.status}</span></p>
+                    <div class="admin-card-footer">
+                        <button class="btn-edit-full" onclick="openEditUser(${customer.id})">✏️ Edit</button>
+                        <button class="status-toggle-btn ${statusClass}" onclick="event.stopPropagation(); toggleUserStatus(${customer.id})">
+                            ${customer.status === 'Active' ? '✓ Active' : '✕ Inactive'}
+                        </button>
+                        <button class="btn-invoice" onclick="viewCustomerInvoice(${customer.id})">📄 Invoice</button>
+                        <button class="btn-share" onclick="showShareOptions(${customer.id})">🔗 Share</button>
+                    </div>
+                `;
+                dashboard.appendChild(card);
+            });
+        }
+
+        // Close Admin Dashboard
+        function closeAdminDashboard() {
+            document.getElementById('adminDashboardModal').classList.remove('active');
+        }
+
+        // Open Admin Panel from Dashboard
+        function openAdminPanel() {
+            document.getElementById('adminDashboardModal').classList.remove('active');
+            document.getElementById('adminModal').classList.add('active');
+            displayAllCustomers();
+        }
+
+        // Close Admin Panel
+        function closeAdmin() {
+            document.getElementById('adminModal').classList.remove('active');
+            displayAdminDashboard();
+            document.getElementById('adminDashboardModal').classList.add('active');
+        }
+
+        // Switch admin tab
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'kits') {
+                displayKitNumbers();
+            }
+        }
+
+        // Display all customers
+        function displayAllCustomers() {
+            const customersList = document.getElementById('customersList');
+            customersList.innerHTML = '';
+
+            if (customers.length === 0) {
+                customersList.innerHTML = '<p style="color: #a0d8ff;">No customers found</p>';
+                return;
+            }
+
+            customers.forEach((customer) => {
+                const card = document.createElement('div');
+                card.className = 'customer-card';
+                const statusClass = customer.status === 'Active' ? 'active' : 'inactive';
+                card.innerHTML = `
+                    <div class="customer-card-info">
+                        <p><strong>Name:</strong> ${customer.name}</p>
+                        <p><strong>Username:</strong> ${customer.username}</p>
+                        <p><strong>Kit #:</strong> ${customer.kitNumber || 'N/A'}</p>
+                        <p><strong>SN:</strong> ${customer.sn}</p>
+                        <p><strong>Monthly:</strong> ₭${customer.monthlyPrice.toLocaleString()} | <strong>Prepaid:</strong> ${customer.prepaidMonths} months</p>
+                    </div>
+                    <div class="customer-card-actions">
+                        <button class="btn-edit-full" onclick="openEditUser(${customer.id})">✏️ Edit</button>
+                        <button class="status-toggle-btn ${statusClass}" onclick="event.stopPropagation(); toggleUserStatus(${customer.id})">
+                            ${customer.status === 'Active' ? '✓ Active' : '✕ Inactive'}
+                        </button>
+                        <button class="btn-invoice" onclick="viewCustomerInvoice(${customer.id})">📄 Invoice</button>
+                        <button class="btn-share" onclick="showShareOptions(${customer.id})">🔗 Share</button>
+                    </div>
+                `;
+                customersList.appendChild(card);
+            });
+        }
+
+        // Create new user
+        function createNewUser() {
+            const name = document.getElementById('newName').value.trim();
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+            const kitNumber = document.getElementById('newKitNumber').value.trim();
+            const sn = document.getElementById('newSN').value.trim();
+            const price = parseInt(document.getElementById('newPrice').value);
+            const billDate = parseInt(document.getElementById('newBillDate').value);
+            const prepaid = parseInt(document.getElementById('newPrepaid').value) || 0;
+
+            if (!name || !username || !password || !kitNumber || !sn || !price || !billDate) {
+                alert('❌ Please fill in all required fields');
+                return;
+            }
+
+            if (customers.find(c => c.username === username)) {
+                alert('❌ Username already exists');
+                return;
+            }
+
+            const newId = Math.max(...customers.map(c => c.id), 0) + 1;
+
+            const newCustomer = {
+                id: newId,
+                name: name,
+                username: username,
+                password: password,
+                kitNumber: kitNumber,
+                sn: sn,
+                monthlyPrice: price,
+                billDate: billDate,
+                billingPeriod: 'Monthly',
+                prepaidMonths: prepaid,
+                status: 'Active'
+            };
+
+            customers.push(newCustomer);
+            saveCustomers();
+
+            alert(`✅ User "${username}" created successfully!`);
+            clearCreateForm();
+            displayAllCustomers();
+        }
+
+        // Clear create form
+        function clearCreateForm() {
+            document.getElementById('newName').value = '';
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('newKitNumber').value = '';
+            document.getElementById('newSN').value = '';
+            document.getElementById('newPrice').value = '';
+            document.getElementById('newBillDate').value = '';
+            document.getElementById('newPrepaid').value = '';
+        }
+
+        // Delete customer from admin panel
+        function deleteCustomerAdmin(id) {
+            const customer = customers.find(c => c.id === id);
+            if (confirm(`Delete user "${customer.name}" (${customer.username})? This cannot be undone.`)) {
+                customers = customers.filter(c => c.id !== id);
+                saveCustomers();
+                alert('✅ User deleted successfully');
+                displayAllCustomers();
+            }
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const btn = event.target;
+            if (field.type === 'password') {
+                field.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                field.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        // Open edit user modal
+        function openEditUser(id) {
+            const customer = customers.find(c => c.id === id);
+            if (!customer) return;
+
+            document.getElementById('editName').value = customer.name;
+            document.getElementById('editUsername').value = customer.username;
+            document.getElementById('editPassword').value = customer.password;
+            document.getElementById('editKitNumber').value = customer.kitNumber || '';
+            document.getElementById('editSN').value = customer.sn;
+            document.getElementById('editPrice').value = customer.monthlyPrice;
+            document.getElementById('editBillDate').value = customer.billDate;
+            document.getElementById('editPrepaid').value = customer.prepaidMonths;
+            document.getElementById('editPassword').type = 'password';
+            
+            document.getElementById('editUserModal').dataset.customerId = id;
+            document.getElementById('editUserModal').classList.add('active');
+        }
+
+        // Close edit user modal
+        function closeEditUser() {
+            document.getElementById('editUserModal').classList.remove('active');
+            document.getElementById('editUserModal').dataset.customerId = '';
+        }
+
+        // Save edited user
+        function saveEditedUser() {
+            const customerId = parseInt(document.getElementById('editUserModal').dataset.customerId);
+            const name = document.getElementById('editName').value.trim();
+            const password = document.getElementById('editPassword').value.trim();
+            const kitNumber = document.getElementById('editKitNumber').value.trim();
+            const sn = document.getElementById('editSN').value.trim();
+            const price = parseInt(document.getElementById('editPrice').value);
+            const billDate = parseInt(document.getElementById('editBillDate').value);
+            const prepaid = parseInt(document.getElementById('editPrepaid').value) || 0;
+
+            if (!name || !password || !kitNumber || !sn || !price || !billDate) {
+                alert('❌ Please fill in all required fields');
+                return;
+            }
+
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+
+            customer.name = name;
+            customer.password = password;
+            customer.kitNumber = kitNumber;
+            customer.sn = sn;
+            customer.monthlyPrice = price;
+            customer.billDate = billDate;
+            customer.prepaidMonths = prepaid;
+
+            saveCustomers();
+            alert('✅ User updated successfully');
+            closeEditUser();
+            displayAllCustomers();
+        }
+
+        // Toggle user status (Active/Inactive)
+        function toggleUserStatus(id) {
+            const customer = customers.find(c => c.id === id);
+            if (!customer) return;
+
+            customer.status = customer.status === 'Active' ? 'Inactive' : 'Active';
+            saveCustomers();
+
+            // Refresh all views to ensure UI updates
+            displayAdminDashboard();
+            displayAllCustomers();
+            displayKitNumbers();
+        }
+
+        // Display Kit Numbers
+        function displayKitNumbers() {
+            const kitsList = document.getElementById('kitsList');
+            kitsList.innerHTML = '';
+
+            if (customers.length === 0) {
+                kitsList.innerHTML = '<p style="color: #a0d8ff;">No customers found</p>';
+                return;
+            }
+
+            customers.forEach((customer) => {
+                const card = document.createElement('div');
+                card.className = 'customer-card';
+                card.innerHTML = `
+                    <div class="customer-card-info">
+                        <p><strong>Company:</strong> ${customer.name}</p>
+                        <p><strong>Kit Number:</strong> <span style="color: #ff6b00; font-weight: bold; font-size: 1.1em;">${customer.kitNumber || 'N/A'}</span></p>
+                        <p><strong>Serial Number (SN):</strong> ${customer.sn}</p>
+                        <p><strong>Username:</strong> ${customer.username}</p>
+                        <p><strong>Status:</strong> <span style="color: ${customer.status === 'Active' ? '#4aff4a' : '#ff6b6b'};">● ${customer.status}</span></p>
+                    </div>
+                `;
+                kitsList.appendChild(card);
+            });
+        }
+
+        // View Customer Invoice (Admin)
+        function viewCustomerInvoice(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+
+            // Temporarily set currentCustomer for invoice generation
+            const originalCustomer = currentCustomer;
+            currentCustomer = customer;
+
+            viewInvoice();
+
+            // Restore original customer
+            currentCustomer = originalCustomer;
+        }
+
+        // Show Share Options Modal
+        function showShareOptions(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) return;
+
+            document.getElementById('shareCustomerName').textContent = customer.name;
+            
+            // Generate shareable link
+            const baseUrl = window.location.origin + window.location.pathname;
+            const shareLink = `${baseUrl}?customer=${customer.id}`;
+            document.getElementById('shareLink').textContent = shareLink;
+
+            // Generate QR Code
+            const qrCanvas = document.getElementById('qrCode');
+            QRCode.toCanvas(qrCanvas, shareLink, {
+                width: 150,
+                height: 150,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) console.error(error);
+            });
+
+            document.getElementById('shareModal').classList.add('active');
+        }
+
+        // Close Share Modal
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('active');
+        }
+
+        // Copy Share Link to Clipboard
+        function copyShareLink() {
+            const linkElement = document.getElementById('shareLink');
+            const link = linkElement.textContent;
+            
+            navigator.clipboard.writeText(link).then(function() {
+                // Show success feedback
+                const originalText = linkElement.textContent;
+                linkElement.textContent = '✅ Copied to clipboard!';
+                linkElement.style.color = '#4aff4a';
+                
+                setTimeout(() => {
+                    linkElement.textContent = originalText;
+                    linkElement.style.color = '#64c8ff';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = linkElement.textContent;
+                linkElement.textContent = '✅ Copied to clipboard!';
+                linkElement.style.color = '#4aff4a';
+                
+                setTimeout(() => {
+                    linkElement.textContent = originalText;
+                    linkElement.style.color = '#64c8ff';
+                }, 2000);
+            });
+        }
+
+        // Check for URL parameters on page load (for direct invoice viewing)
+        function checkUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get('customer');
+            
+            if (customerId) {
+                const customer = customers.find(c => c.id == customerId);
+                if (customer) {
+                    // Show invoice directly without login
+                    currentCustomer = customer;
+                    showDashboard();
+                    viewInvoice();
+                    
+                    // Hide login and dashboard, show only invoice
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'none';
+                    document.getElementById('invoiceModal').classList.add('active');
+                    
+                    // Add a back button to the invoice modal
+                    const modalHeader = document.querySelector('#invoiceModal .modal-header');
+                    if (modalHeader && !modalHeader.querySelector('.back-btn')) {
+                        const backBtn = document.createElement('button');
+                        backBtn.className = 'back-btn';
+                        backBtn.innerHTML = '← Back';
+                        backBtn.style.cssText = 'background: rgba(100, 200, 255, 0.3); color: #64c8ff; border: 1px solid rgba(100, 200, 255, 0.5); padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-right: 10px;';
+                        backBtn.onclick = function() {
+                            window.location.href = window.location.pathname; // Go back to main page
+                        };
+                        modalHeader.insertBefore(backBtn, modalHeader.firstChild);
+                    }
+                }
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initializeTheme();
+            generateStars();
+            generateClouds();
+            initializeCustomers();
+            checkUrlParameters();
+        });
+    </script>
+</body>
+</html>
